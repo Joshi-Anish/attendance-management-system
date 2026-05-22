@@ -7,6 +7,7 @@ import (
 
 func SetupRoutes() {
 	http.HandleFunc("/students", studentsHandler)
+	http.HandleFunc("/attendance/time", handlers.GetTotalTime)
 }
 
 func studentsHandler(w http.ResponseWriter, r *http.Request) {

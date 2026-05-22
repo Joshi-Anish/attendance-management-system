@@ -5,3 +5,4 @@ import (
 )
 
 var Students = []models.Student{}
+var Attendance = []models.Attendance{}
