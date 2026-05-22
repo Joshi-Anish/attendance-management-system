@@ -16,6 +16,19 @@ func CreateStudent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if student.Name == "" {
+		http.Error(w, "Name cannot be empty", http.StatusBadRequest)
+		return
+	}
+
+	//validate by id
+	for _, s := range storage.Students {
+		if s.ID == student.ID {
+			http.Error(w, "Student ID already exists", http.StatusBadRequest)
+			return
+		}
+	}
+
 	storage.Students = append(storage.Students, student)
 
 	w.Header().Set("Content-Type", "application/json")
