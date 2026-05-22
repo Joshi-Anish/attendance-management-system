@@ -6,7 +6,7 @@ import (
 )
 
 func home(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, " Attendance Management System Running")
+	fmt.Println(w, " Attendance Management System Running")
 }
 
 func main() {
