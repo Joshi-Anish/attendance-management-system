@@ -10,6 +10,7 @@ func SetupRoutes() {
 	http.HandleFunc("/checkin", handlers.CheckIn)
 	http.HandleFunc("/checkout", handlers.CheckOut)
 	http.HandleFunc("/attendance/time", handlers.GetTotalTime)
+	http.HandleFunc("/dashboard", handlers.GetDashboard)
 }
 
 func studentsHandler(w http.ResponseWriter, r *http.Request) {
