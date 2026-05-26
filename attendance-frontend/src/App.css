@@ -91,3 +91,64 @@ button:last-child {
 .card b {
   color: #333;
 }
+.container {
+  padding: 20px;
+  font-family: Arial;
+}
+
+.stats {
+  display: flex;
+  gap: 10px;
+}
+
+.box {
+  background: #f4f4f4;
+  padding: 10px;
+  border-radius: 10px;
+  flex: 1;
+  text-align: center;
+}
+
+.form {
+  margin: 20px 0;
+  padding: 15px;
+  background: #eee;
+  border-radius: 10px;
+}
+
+.form input {
+  margin: 5px;
+  padding: 8px;
+}
+
+.grid {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.card {
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 10px;
+  width: 200px;
+}
+
+.buttons button {
+  margin: 3px;
+}
+
+.table {
+  margin-top: 10px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px;
+  border-bottom: 1px solid #ddd;
+}
+
+.header {
+  font-weight: bold;
+}

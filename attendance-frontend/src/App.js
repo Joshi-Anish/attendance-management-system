@@ -9,6 +9,14 @@ function App() {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [form, setForm] = useState({
+    id: "",
+    name: "",
+    address: "",
+    grade: ""
+  });
+
+  // ---------------- LOAD DATA ----------------
   const loadAll = async () => {
     try {
       const [sRes, dRes, hRes] = await Promise.all([
@@ -35,31 +43,62 @@ function App() {
     loadAll();
   }, []);
 
-  // CHECK IN
+  // ---------------- INPUT CHANGE ----------------
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  // ---------------- ADD STUDENT ----------------
+  const addStudent = async () => {
+    await fetch(`${API}/students`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form)
+    });
+
+    setForm({ id: "", name: "", address: "", grade: "" });
+    loadAll();
+  };
+
+  // ---------------- DELETE STUDENT ----------------
+  const deleteStudent = async (id) => {
+    await fetch(`${API}/students/delete?id=${id}`, {
+      method: "DELETE"
+    });
+
+    loadAll();
+  };
+
+  // ---------------- CHECK IN ----------------
   const checkIn = async (id) => {
     await fetch(`${API}/checkin`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ student_id: id }),
+      body: JSON.stringify({ student_id: id })
     });
+
     loadAll();
   };
 
-  // CHECK OUT
+  // ---------------- CHECK OUT ----------------
   const checkOut = async (id) => {
     await fetch(`${API}/checkout`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ student_id: id }),
+      body: JSON.stringify({ student_id: id })
     });
+
     loadAll();
   };
 
-  // STATUS LOGIC (IMPORTANT FIX)
+  // ---------------- STATUS LOGIC ----------------
   const getStatus = (studentId) => {
     const records = history.filter(h => h.student_id === studentId);
 
-    if (records.length === 0) return "Not Active";
+    if (records.length === 0) return "Not Active ⚪";
 
     const latest = records[0];
 
@@ -71,7 +110,7 @@ function App() {
   return (
     <div className="container">
 
-      <h1 className="title">HR Attendance Dashboard</h1>
+      <h1>HR Attendance Dashboard</h1>
 
       {/* DASHBOARD */}
       <div className="stats">
@@ -91,6 +130,41 @@ function App() {
         </div>
       </div>
 
+      {/* ADD STUDENT FORM */}
+      <div className="form">
+        <h2>Add Student</h2>
+
+        <input
+          name="id"
+          placeholder="ID"
+          value={form.id}
+          onChange={handleChange}
+        />
+
+        <input
+          name="name"
+          placeholder="Name"
+          value={form.name}
+          onChange={handleChange}
+        />
+
+        <input
+          name="address"
+          placeholder="Address"
+          value={form.address}
+          onChange={handleChange}
+        />
+
+        <input
+          name="grade"
+          placeholder="Grade"
+          value={form.grade}
+          onChange={handleChange}
+        />
+
+        <button onClick={addStudent}>Add Student</button>
+      </div>
+
       {/* STUDENTS */}
       <h2>Students</h2>
 
@@ -102,18 +176,15 @@ function App() {
             <div className="card" key={s.id}>
               <h3>{s.name}</h3>
               <p>ID: {s.id}</p>
+              <p>Address: {s.address}</p>
               <p>Grade: {s.grade}</p>
 
               <p><b>Status:</b> {getStatus(s.id)}</p>
 
               <div className="buttons">
-                <button onClick={() => checkIn(s.id)}>
-                  Check In
-                </button>
-
-                <button onClick={() => checkOut(s.id)}>
-                  Check Out
-                </button>
+                <button onClick={() => checkIn(s.id)}>Check In</button>
+                <button onClick={() => checkOut(s.id)}>Check Out</button>
+                <button onClick={() => deleteStudent(s.id)}>Delete</button>
               </div>
             </div>
           ))}
@@ -121,7 +192,7 @@ function App() {
       )}
 
       {/* HISTORY */}
-      <h2 style={{ marginTop: "30px" }}>Attendance History</h2>
+      <h2>Attendance History</h2>
 
       <div className="table">
         <div className="row header">
