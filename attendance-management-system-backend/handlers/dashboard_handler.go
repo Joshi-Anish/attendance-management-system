@@ -2,9 +2,16 @@ package handlers
 
 import (
 	"attendance-management-system/db"
+	"database/sql"
 	"encoding/json"
 	"net/http"
 )
+
+type Record struct {
+	StudentID string  `json:"student_id"`
+	CheckIn   string  `json:"check_in"`
+	CheckOut  *string `json:"check_out"` // 👈 IMPORTANT FIX
+}
 
 func GetDashboard(w http.ResponseWriter, r *http.Request) {
 
@@ -13,58 +20,60 @@ func GetDashboard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// total students today
 	var totalStudents int
-	db.DB.QueryRow(`
-		SELECT COUNT(DISTINCT student_id)
-		FROM attendance
-	`).Scan(&totalStudents)
-
-	// active students (not checked out yet)
 	var activeStudents int
+	var completedSessions int
+
+	db.DB.QueryRow("SELECT COUNT(*) FROM students").Scan(&totalStudents)
+
 	db.DB.QueryRow(`
 		SELECT COUNT(*)
 		FROM attendance
 		WHERE check_out IS NULL
 	`).Scan(&activeStudents)
 
-	// completed sessions
-	var completedSessions int
 	db.DB.QueryRow(`
 		SELECT COUNT(*)
 		FROM attendance
 		WHERE check_out IS NOT NULL
 	`).Scan(&completedSessions)
 
-	// full records
-	rows, err := db.DB.Query(`SELECT student_id, check_in, check_out FROM attendance`)
+	rows, err := db.DB.Query(`
+		SELECT student_id, check_in, check_out
+		FROM attendance
+		ORDER BY check_in DESC
+	`)
+
 	if err != nil {
 		http.Error(w, "DB error", http.StatusInternalServerError)
 		return
 	}
 	defer rows.Close()
 
-	type Record struct {
-		StudentID string `json:"student_id"`
-		CheckIn   string `json:"check_in"`
-		CheckOut  string `json:"check_out"`
-	}
-
 	var records []Record
 
 	for rows.Next() {
 		var r Record
-		rows.Scan(&r.StudentID, &r.CheckIn, &r.CheckOut)
+		var checkOut sql.NullString
+
+		rows.Scan(&r.StudentID, &r.CheckIn, &checkOut)
+
+		// ✅ FIX: convert empty string → NULL properly
+		if checkOut.Valid {
+			r.CheckOut = &checkOut.String
+		} else {
+			r.CheckOut = nil
+		}
+
 		records = append(records, r)
 	}
 
-	response := map[string]interface{}{
+	w.Header().Set("Content-Type", "application/json")
+
+	json.NewEncoder(w).Encode(map[string]interface{}{
 		"total_students":     totalStudents,
 		"active_students":    activeStudents,
 		"completed_sessions": completedSessions,
 		"records":            records,
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
+	})
 }

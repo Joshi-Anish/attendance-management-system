@@ -5,37 +5,39 @@ import (
 	"net/http"
 )
 
-func enableCORS(w http.ResponseWriter) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+func cors(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		next(w, r)
+	}
 }
 
 func SetupRoutes() {
-	http.HandleFunc("/students", studentsHandler)
-	http.HandleFunc("/checkin", handlers.CheckIn)
-	http.HandleFunc("/checkout", handlers.CheckOut)
-	http.HandleFunc("/attendance/time", handlers.GetTotalTime)
-	http.HandleFunc("/dashboard", handlers.GetDashboard)
+
+	http.HandleFunc("/students", cors(studentsHandler))
+	http.HandleFunc("/checkin", cors(handlers.CheckIn))
+	http.HandleFunc("/checkout", cors(handlers.CheckOut))
+	http.HandleFunc("/dashboard", cors(handlers.GetDashboard))
+	http.HandleFunc("/attendance", cors(handlers.GetAttendanceHistory))
 }
 
 func studentsHandler(w http.ResponseWriter, r *http.Request) {
 
-	enableCORS(w)
-
-	if r.Method == http.MethodOptions {
-		return
-	}
-
-	if r.Method == http.MethodPost {
-		handlers.CreateStudent(w, r)
-		return
-	}
-
-	if r.Method == http.MethodGet {
+	switch r.Method {
+	case http.MethodGet:
 		handlers.GetStudents(w, r)
-		return
+	case http.MethodPost:
+		handlers.CreateStudent(w, r)
+	default:
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
-
-	http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 }
