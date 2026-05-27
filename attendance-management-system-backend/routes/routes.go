@@ -10,8 +10,9 @@ func cors(next http.HandlerFunc) http.HandlerFunc {
 
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS")
 
+		// handle preflight request
 		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusOK)
 			return
@@ -24,9 +25,15 @@ func cors(next http.HandlerFunc) http.HandlerFunc {
 func SetupRoutes() {
 
 	http.HandleFunc("/students", cors(studentsHandler))
+
+	// DELETE STUDENT ROUTE
+	http.HandleFunc("/students/delete", cors(handlers.DeleteStudent))
+
 	http.HandleFunc("/checkin", cors(handlers.CheckIn))
 	http.HandleFunc("/checkout", cors(handlers.CheckOut))
+
 	http.HandleFunc("/dashboard", cors(handlers.GetDashboard))
+
 	http.HandleFunc("/attendance", cors(handlers.GetAttendanceHistory))
 }
 

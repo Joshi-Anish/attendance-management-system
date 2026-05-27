@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// ================= CREATE STUDENT =================
+// CREATE STUDENT
 func CreateStudent(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != http.MethodPost {
@@ -62,7 +62,7 @@ func CreateStudent(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(student)
 }
 
-// ================= GET STUDENTS =================
+// GET STUDENTS
 func GetStudents(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != http.MethodGet {
@@ -94,4 +94,43 @@ func GetStudents(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(students)
+}
+
+// delete student
+func DeleteStudent(w http.ResponseWriter, r *http.Request) {
+
+	// allow only DELETE
+	if r.Method != http.MethodDelete {
+		http.Error(w, "Only DELETE allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// get id from URL
+	id := r.URL.Query().Get("id")
+
+	if id == "" {
+		http.Error(w, "Missing student id", http.StatusBadRequest)
+		return
+	}
+
+	// delete from database
+	res, err := db.DB.Exec("DELETE FROM students WHERE id = ?", id)
+
+	if err != nil {
+		http.Error(w, "Database error", http.StatusInternalServerError)
+		return
+	}
+
+	rows, _ := res.RowsAffected()
+
+	if rows == 0 {
+		http.Error(w, "Student not found", http.StatusNotFound)
+		return
+	}
+
+	// response
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{
+		"message": "Student deleted successfully",
+	})
 }
