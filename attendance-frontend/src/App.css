@@ -104,3 +104,6 @@ th {
   padding: 3px 8px;
   border-radius: 20px;
 }
+button.delete {
+  background: #ef4444;
+}

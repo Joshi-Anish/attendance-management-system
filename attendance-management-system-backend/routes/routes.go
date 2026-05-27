@@ -35,6 +35,8 @@ func SetupRoutes() {
 	http.HandleFunc("/dashboard", cors(handlers.GetDashboard))
 
 	http.HandleFunc("/attendance", cors(handlers.GetAttendanceHistory))
+	http.HandleFunc("/attendance/clear", cors(handlers.ClearAttendance))
+	http.HandleFunc("/attendance/download", cors(handlers.DownloadAttendance))
 }
 
 func studentsHandler(w http.ResponseWriter, r *http.Request) {

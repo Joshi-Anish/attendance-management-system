@@ -48,7 +48,7 @@ export default function Students() {
   const deleteStudent = (id) => {
     fetch(`http://localhost:8080/students/delete?id=${id}`, {
       method: "DELETE",
-    }).then(() => loadStudents());
+    }).then(loadStudents);
   };
 
   // CHECK IN
@@ -57,9 +57,7 @@ export default function Students() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ student_id: id }),
-    }).then(() => {
-      loadHistory();
-    });
+    }).then(loadHistory);
   };
 
   // CHECK OUT
@@ -68,12 +66,27 @@ export default function Students() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ student_id: id }),
+    }).then(loadHistory);
+  };
+
+  // DOWNLOAD CSV
+  const downloadCSV = () => {
+    window.open("http://localhost:8080/attendance/download");
+  };
+
+  // CLEAR DATA
+  const clearData = () => {
+    if (!window.confirm("⚠️ This will delete ALL attendance data. Continue?"))
+      return;
+
+    fetch("http://localhost:8080/attendance/clear", {
+      method: "DELETE",
     }).then(() => {
       loadHistory();
     });
   };
 
-  // ACTIVE CHECK (SAFE)
+  // ACTIVE CHECK
   const isActive = (id) => {
     return history.some(
       (h) =>
@@ -118,7 +131,6 @@ export default function Students() {
 
       {students.map((s) => (
         <div key={s.id} className="student-card">
-
           <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
             <h3 style={{ margin: 0 }}>{s.name}</h3>
 
@@ -143,6 +155,14 @@ export default function Students() {
 
       {/* ================= ATTENDANCE HISTORY ================= */}
       <h2>Attendance History</h2>
+
+      {/* 🔥 NEW ACTION BUTTONS */}
+      <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
+        <button onClick={downloadCSV}>Download CSV</button>
+        <button className="delete" onClick={clearData}>
+          Clear Data
+        </button>
+      </div>
 
       <table>
         <thead>
