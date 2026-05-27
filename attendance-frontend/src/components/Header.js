@@ -1,11 +1,11 @@
 export default function Header() {
   return (
-    <div className="header">
-      <h2>HR Attendance System</h2>
-      <div className="nav">
+    <header className="header">
+      <h1>HR Attendance System</h1>
+      <nav>
         <span>Dashboard</span>
         <span>Students</span>
-      </div>
-    </div>
+      </nav>
+    </header>
   );
 }

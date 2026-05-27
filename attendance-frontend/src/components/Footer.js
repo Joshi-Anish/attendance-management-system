@@ -1,7 +1,7 @@
 export default function Footer() {
   return (
-    <div className="footer">
-      © 2026 HR Attendance System
-    </div>
+    <footer className="footer">
+      <p>© 2026 HR Attendance System | Built by You</p>
+    </footer>
   );
 }
