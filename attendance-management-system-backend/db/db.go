@@ -19,16 +19,16 @@ func Connect() {
 		log.Fatal("DB connection error:", err)
 	}
 
-	//  Connection pool settings (IMPORTANT)
+	// Connection pool settings
 	DB.SetMaxOpenConns(25)
 	DB.SetMaxIdleConns(25)
 	DB.SetConnMaxLifetime(5 * time.Minute)
 
-	//  Test connection
+	// Test connection
 	err = DB.Ping()
 	if err != nil {
 		log.Fatal("Database ping failed:", err)
 	}
 
-	log.Println("MySQL connected successfully 🚀")
+	log.Println("MySQL connected successfully")
 }

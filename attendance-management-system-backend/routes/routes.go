@@ -25,18 +25,15 @@ func cors(next http.HandlerFunc) http.HandlerFunc {
 func SetupRoutes() {
 
 	http.HandleFunc("/students", cors(studentsHandler))
-
-	// DELETE STUDENT ROUTE
 	http.HandleFunc("/students/delete", cors(handlers.DeleteStudent))
-
 	http.HandleFunc("/checkin", cors(handlers.CheckIn))
 	http.HandleFunc("/checkout", cors(handlers.CheckOut))
-
 	http.HandleFunc("/dashboard", cors(handlers.GetDashboard))
-
 	http.HandleFunc("/attendance", cors(handlers.GetAttendanceHistory))
 	http.HandleFunc("/attendance/clear", cors(handlers.ClearAttendance))
 	http.HandleFunc("/attendance/download", cors(handlers.DownloadAttendance))
+	http.HandleFunc("/register", cors(handlers.Register))
+	http.HandleFunc("/login", cors(handlers.Login))
 }
 
 func studentsHandler(w http.ResponseWriter, r *http.Request) {
