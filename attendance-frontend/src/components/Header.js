@@ -1,11 +1,31 @@
+import { Link } from "react-router-dom";
+
 export default function Header() {
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const logout = () => {
+    localStorage.removeItem("user");
+    window.location.href = "/";
+  };
+
   return (
-    <header className="header">
-      <h1> Attendance Management  System</h1>
+    <div className="header">
+      <h2>Attendance System</h2>
+
       <nav>
-        <span>Dashboard</span>
-        <span>Students</span>
+        {!user && (
+          <>
+            <Link to="/">Login</Link>
+            <Link to="/register">Register</Link>
+          </>
+        )}
+
+        {user?.role === "student" && <Link to="/student">Dashboard</Link>}
+        {user?.role === "teacher" && <Link to="/teacher">Dashboard</Link>}
+        {user?.role === "admin" && <Link to="/admin">Dashboard</Link>}
+
+        {user && <button onClick={logout}>Logout</button>}
       </nav>
-    </header>
+    </div>
   );
 }

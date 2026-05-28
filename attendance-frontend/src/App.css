@@ -1,22 +1,29 @@
 body {
   margin: 0;
-  font-family: Arial;
-  background: #f4f6f8;
+  font-family: "Inter", sans-serif;
+  background: #f4f6fb;
+  color: #1f2937;
 }
 
 /* HEADER */
 .header {
-  background: #111827;
-  color: white;
-  padding: 15px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 15px 30px;
+  background: #111827;
+  color: white;
 }
 
-.header nav span {
-  margin-left: 15px;
-  cursor: pointer;
+.header nav a {
+  margin: 0 10px;
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.header nav a:hover {
+  color: #60a5fa;
 }
 
 /* FOOTER */
@@ -25,85 +32,103 @@ body {
   padding: 15px;
   background: #111827;
   color: white;
-  margin-top: 30px;
+  margin-top: 40px;
 }
 
-/* CONTAINER */
+/* LAYOUT */
 .container {
   max-width: 1100px;
   margin: auto;
   padding: 20px;
 }
 
-/* FORM */
-.form {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 20px;
+/* AUTH BOX */
+.auth-box {
+  width: 360px;
+  margin: 100px auto;
+  padding: 25px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  text-align: center;
 }
 
-input {
+.auth-box h2 {
+  margin-bottom: 15px;
+}
+
+/* INPUTS */
+input, select {
+  width: 100%;
   padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+  margin: 8px 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
 }
 
-/* BUTTON */
+input:focus {
+  border-color: #3b82f6;
+}
+
+/* BUTTONS */
 button {
-  padding: 10px 14px;
+  padding: 10px 12px;
   border: none;
-  border-radius: 6px;
-  background: #2563eb;
+  border-radius: 8px;
+  background: #3b82f6;
   color: white;
   cursor: pointer;
+  margin: 5px;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #2563eb;
 }
 
 button.delete {
   background: #ef4444;
 }
 
-/* STUDENT CARD */
-.student-card {
-  background: white;
-  padding: 15px;
-  margin-bottom: 10px;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+button.delete:hover {
+  background: #dc2626;
 }
 
-/* BUTTON GROUP */
-.buttons {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
+/* STUDENT CARD */
+.card {
+  background: white;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+}
+
+/* ONLINE DOT */
+.online {
+  color: #22c55e;
+  font-weight: bold;
+  font-size: 13px;
 }
 
 /* TABLE */
 table {
   width: 100%;
-  background: white;
   border-collapse: collapse;
   margin-top: 10px;
-  border-radius: 10px;
+  background: white;
+  border-radius: 12px;
   overflow: hidden;
-}
-
-th, td {
-  padding: 12px;
-  border-bottom: 1px solid #eee;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
 }
 
 th {
-  background: #f1f5f9;
-}
-.online-dot {
-  background: #22c55e;
+  background: #111827;
   color: white;
-  font-size: 12px;
-  padding: 3px 8px;
-  border-radius: 20px;
+  padding: 10px;
 }
-button.delete {
-  background: #ef4444;
+
+td {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
 }
